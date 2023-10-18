@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "HealingProjectCharacter.generated.h"
 
+
+
+
 UCLASS(config=Game)
 class AHealingProjectCharacter : public ACharacter
 {
@@ -45,11 +48,7 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 protected:
 	// APawn interface
@@ -60,6 +59,21 @@ protected:
 	//functions
 
 	void ActivateHeal();
+
+
+
+	// Variables
+
+	int m_HealingFlasks;
+
+	float m_DefaultHeal;
+
+	float m_IncreasedHeal;
+
+	float m_Health;
+
+	float m_MaxHealth = 100.f;
+
 
 public:
 	/** Returns CameraBoom subobject **/

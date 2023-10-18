@@ -1,6 +1,7 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HealingProjectCharacter.h"
+
+#include "Characters/CharHealing.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -8,16 +9,14 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
-//////////////////////////////////////////////////////////////////////////
-// AHealingProjectCharacter
-
-AHealingProjectCharacter::AHealingProjectCharacter()
+// Sets default values
+ACharHealing::ACharHealing()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 
-	// set our turn rate for input
-	TurnRateGamepad = 50.f;
+
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -56,59 +55,14 @@ AHealingProjectCharacter::AHealingProjectCharacter()
 	m_Health = m_MaxHealth;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
-void AHealingProjectCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+// Called when the game starts or when spawned
+void ACharHealing::BeginPlay()
 {
-	// Set up gameplay key bindings
-	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AHealingProjectCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Move Right / Left", this, &AHealingProjectCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AHealingProjectCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AHealingProjectCharacter::LookUpAtRate);
-
-
-	//Custom Actions
-	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &AHealingProjectCharacter::ActivateHeal);
-
-
+	Super::BeginPlay();
+	
 }
 
-void AHealingProjectCharacter::ActivateHeal()
-{
-	FString HealString = FString::SanitizeFloat(m_Health);
-	if (m_HealingFlasks > 0 && m_Health < 100)
-	{
-		m_Health += m_DefaultHeal;
-		FMath::Clamp(m_Health, 0, m_MaxHealth);
-
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, HealString);
-	}
-}
-
-void AHealingProjectCharacter::TurnAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
-}
-
-void AHealingProjectCharacter::LookUpAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
-}
-
-void AHealingProjectCharacter::MoveForward(float Value)
+void ACharHealing::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
@@ -122,17 +76,63 @@ void AHealingProjectCharacter::MoveForward(float Value)
 	}
 }
 
-void AHealingProjectCharacter::MoveRight(float Value)
+void ACharHealing::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
 }
+
+void ACharHealing::ActivateHeal()
+{
+	FString HealString = FString::SanitizeFloat(m_Health);
+	if (m_HealingFlasks > 0 && m_Health < 100)
+	{
+		m_Health += m_DefaultHeal;
+		FMath::Clamp(m_Health, 0, m_MaxHealth);
+
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, HealString);
+	}
+}
+
+// Called every frame
+void ACharHealing::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+// Called to bind functionality to input
+void ACharHealing::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Set up gameplay key bindings
+	check(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ACharHealing::MoveForward);
+	PlayerInputComponent->BindAxis("Move Right / Left", this, &ACharHealing::MoveRight);
+
+	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
+	// "turn" handles devices that provide an absolute delta, such as a mouse.
+	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
+
+
+
+	//Custom Actions
+	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &ACharHealing::ActivateHeal);
+
+}
+
