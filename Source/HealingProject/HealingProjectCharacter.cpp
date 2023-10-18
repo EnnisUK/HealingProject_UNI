@@ -73,6 +73,10 @@ void AHealingProjectCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AHealingProjectCharacter::LookUpAtRate);
 
 
+	//Custom Actions
+	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &AHealingProjectCharacter::ActivateHeal);
+
+
 }
 
 void AHealingProjectCharacter::ActivateHeal()
