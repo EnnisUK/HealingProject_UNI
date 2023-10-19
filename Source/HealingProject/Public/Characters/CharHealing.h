@@ -38,6 +38,8 @@ public:
 
 	float m_IncreasedHeal;
 
+	float ArmourAmount;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_Health;
 
@@ -48,6 +50,8 @@ public:
 
 	bool bReflexAttempted;
 
+	bool bIsMenuOpen;
+
 	FTimerHandle m_HealDelay;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -55,6 +59,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundBase* ReflexFail;
+
+	APlayerController* PC;
 
 protected:
 	// Called when the game starts or when spawned
@@ -77,6 +83,12 @@ protected:
 
 	void ReflexBuffActivate();
 
+	UFUNCTION(BlueprintCallable)
+	void ClearBuffs();
+
+	UFUNCTION(BlueprintCallable)
+	void ShowMenu();
+
 
 
 
@@ -94,6 +106,15 @@ public:
 	/* The widget instance that we are using as our HUD*/
 	UPROPERTY()
 	class UPlayerHUD* PlayerHUD;
+
+
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UBuffSelectedMenu> MenuHUDClass;
+
+	/* The widget instance that we are using as our HUD*/
+	UPROPERTY()
+	class UBuffSelectedMenu* SelectBuffMenu;
 
 	void UpdateHealth();
 

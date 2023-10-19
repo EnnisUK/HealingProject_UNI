@@ -14,10 +14,10 @@ class HEALINGPROJECT_API UBuffSelectedMenu : public UUserWidget
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	void HideMenu();
 
-	virtual void NativeConstruct() override;
-
-	void OnHealClicked();
+	void ShowMenu();
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UCanvasPanel* CanvasPanel;

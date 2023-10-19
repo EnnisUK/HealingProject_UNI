@@ -8,15 +8,15 @@
 #include "UMG/Public/Components/Button.h"
 #include "MyEnums.h"
 
-void UBuffSelectedMenu::NativeConstruct()
+void UBuffSelectedMenu::HideMenu()
 {
-	Super::NativeConstruct();
-
-	IncreasedHealButton->OnClicked.AddDynamic(this, &UBuffSelectedMenu::OnHealClicked);
+	check(this);
+	CanvasPanel->SetVisibility(ESlateVisibility::Hidden);
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("HideMenu"));
 }
 
-void UBuffSelectedMenu::OnHealClicked()
+void UBuffSelectedMenu::ShowMenu()
 {
-	Character->ChosenBuff = ESelectedBuff::IncreasedHeal;
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Heal Buff Selected"));
+	check(this);
+	CanvasPanel->SetVisibility(ESlateVisibility::Visible);
 }

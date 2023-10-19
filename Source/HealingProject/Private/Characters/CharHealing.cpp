@@ -13,6 +13,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UObject/ConstructorHelpers.h"
+#include "BuffSelectMenu.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+
 
 
 
@@ -65,6 +68,9 @@ ACharHealing::ACharHealing()
 	// Create Widget
 	PlayerHUDClass = nullptr;
 	PlayerHUD = nullptr;
+
+	SelectBuffMenu = nullptr;
+	MenuHUDClass = nullptr;
 	
 }
 
@@ -72,6 +78,9 @@ ACharHealing::ACharHealing()
 void ACharHealing::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PC = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
 
 	if (IsLocallyControlled() && PlayerHUDClass)
 	{
@@ -81,6 +90,14 @@ void ACharHealing::BeginPlay()
 		PlayerHUD->AddToPlayerScreen();
 		PlayerHUD->SetHealth(m_Health, m_MaxHealth);
 		
+	}
+
+	if (MenuHUDClass)
+	{
+		SelectBuffMenu = CreateWidget<UBuffSelectedMenu>(UGameplayStatics::GetPlayerController(GetWorld(), 0), MenuHUDClass);
+		check(SelectBuffMenu);
+		SelectBuffMenu->HideMenu();
+		SelectBuffMenu->AddToPlayerScreen();
 	}
 	
 }
@@ -204,7 +221,28 @@ void ACharHealing::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	//Custom Actions
 	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &ACharHealing::ActivateHeal);
 	PlayerInputComponent->BindAction("Reflex", IE_Pressed, this, &ACharHealing::ReflexInput);
+	PlayerInputComponent->BindAction("Menu", IE_Pressed, this, &ACharHealing::ShowMenu);
 
+}
+
+void ACharHealing::ShowMenu()
+{
+	if (bIsMenuOpen)
+	{
+		SelectBuffMenu->HideMenu();
+		check(PC);
+		PC->bShowMouseCursor = false;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PC);
+		bIsMenuOpen = false;
+	}
+	else
+	{
+		SelectBuffMenu->ShowMenu();
+		PC->bShowMouseCursor = true;
+		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PC, SelectBuffMenu);
+		bIsMenuOpen = true;
+	
+	}
 }
 
 void ACharHealing::ReflexBuffActivate()
@@ -229,5 +267,17 @@ void ACharHealing::ReflexBuffActivate()
 	default:
 		break;
 	} 
-} 
+}
+
+void ACharHealing::ClearBuffs()
+{
+	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->AirControl = 0.35f;
+	GetCharacterMovement()->MaxWalkSpeed = 800.f;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->GravityScale = 1.3;
+	ArmourAmount = 0;
+
+}
 
