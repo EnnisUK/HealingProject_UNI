@@ -52,6 +52,10 @@ public:
 
 	bool bIsHealing;
 
+	bool bReflexAttempted;
+
+	FTimerHandle m_HealDelay;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,7 +73,7 @@ protected:
 
 	void ReflexInput();
 	
-
+	void HealIsTrue();
 
 
 

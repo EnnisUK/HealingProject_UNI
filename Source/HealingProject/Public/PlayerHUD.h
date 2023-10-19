@@ -16,6 +16,8 @@ public:
 
 	void ReflexBarPerfect();
 
+	void ResetReflexBar();
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* HealthBar;
 
@@ -23,6 +25,8 @@ public:
 	class UProgressBar* ReflexBar;
 
 	float CurrentReflexPercent;
+
+	float MaxReflexBar = 100;
 
 	FTimerHandle ReflexFillBar;
 

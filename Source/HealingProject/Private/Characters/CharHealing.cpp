@@ -118,7 +118,7 @@ void ACharHealing::ActivateHeal()
 	FString HealString = FString::SanitizeFloat(m_Health);
 	if (m_HealingFlasks > 0 && m_Health < 100 && bIsHealing == false)
 	{
-		bIsHealing = true;
+		GetWorld()->GetTimerManager().SetTimer(m_HealDelay, this, &ACharHealing::HealIsTrue, 0.15, false);
 		m_Health += m_DefaultHeal;
 		m_Health = FMath::Clamp(m_Health, 0, m_MaxHealth);
 		
@@ -132,16 +132,35 @@ void ACharHealing::ActivateHeal()
 
 void ACharHealing::ReflexInput()
 {
-	if (UKismetMathLibrary::InRange_FloatFloat(PlayerHUD->CurrentReflexPercent, 0.3, 0.4))
+	if (bIsHealing == true && bReflexAttempted == false)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("PERFECT"));
+	
+		if (UKismetMathLibrary::InRange_FloatFloat(PlayerHUD->CurrentReflexPercent, 0.3, 0.4, true, true))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("PERFECT"));
+			GetWorld()->GetTimerManager().ClearTimer(PlayerHUD->ReflexFillBar);
+			PlayerHUD->ResetReflexBar();
+		}
+		else
+		{
+			bReflexAttempted = true;
+			GetWorld()->GetTimerManager().ClearTimer(PlayerHUD->ReflexFillBar);
+			PlayerHUD->ResetReflexBar();
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("MISSED"));
+		}
 	}
+
 }
 
 void ACharHealing::UpdateHealth()
 {
 	PlayerHUD->SetHealth(m_Health, m_MaxHealth);
 
+}
+
+void ACharHealing::HealIsTrue()
+{
+	bIsHealing = true;
 }
 
 // Called every frame
