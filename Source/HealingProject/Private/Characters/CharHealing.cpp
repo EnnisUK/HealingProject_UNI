@@ -76,6 +76,7 @@ void ACharHealing::BeginPlay()
 		check(PlayerHUD);
 		PlayerHUD->AddToPlayerScreen();
 		PlayerHUD->SetHealth(m_Health, m_MaxHealth);
+		
 	}
 	
 }
@@ -122,7 +123,7 @@ void ACharHealing::ActivateHeal()
 
 		m_HealingFlasks -= 1;
 
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, HealString);
+		PlayerHUD->ReflexBarPerfect();
 	}
 }
 

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Characters/CharHealing.h"
 #include "PlayerHUD.generated.h"
 
 UCLASS(Abstract)
@@ -13,8 +14,19 @@ public:
 
 	void SetHealth(float CurrentHealth, float MaxHealth);
 
+	void ReflexBarPerfect();
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* HealthBar;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UProgressBar* ReflexBar;
+
+	FTimerHandle ReflexFillBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACharHealing* Character;
+
 
 
 };
