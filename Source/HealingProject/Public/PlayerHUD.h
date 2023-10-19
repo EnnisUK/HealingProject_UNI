@@ -22,6 +22,8 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* ReflexBar;
 
+	float CurrentReflexPercent;
+
 	FTimerHandle ReflexFillBar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

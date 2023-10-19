@@ -15,16 +15,20 @@ void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)
 void UPlayerHUD::ReflexBarPerfect()
 {
 	ReflexBar->SetPercent(ReflexBar->Percent + 0.1);
+	CurrentReflexPercent = ReflexBar->Percent;
 
-
-	if (ReflexBar->Percent < 1.0f)
+	if (ReflexBar->Percent < 1.2f)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ReflexFillBar, this, &UPlayerHUD::ReflexBarPerfect, 0.1, true);
+		GetWorld()->GetTimerManager().SetTimer(ReflexFillBar, this, &UPlayerHUD::ReflexBarPerfect, 0.15, true);
 	}
 	else
 	{
 		GetWorld()->GetTimerManager().ClearTimer(ReflexFillBar);
 		ReflexBar->SetPercent(0);
+		CurrentReflexPercent = 0;
+		Character->bIsHealing = false;
+
+		
 	}
 	
 }

@@ -50,6 +50,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_MaxHealth = 100.f;
 
+	bool bIsHealing;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -64,6 +66,8 @@ protected:
 	//functions
 	void ActivateHeal();
 
+
+	void ReflexInput();
 	
 
 

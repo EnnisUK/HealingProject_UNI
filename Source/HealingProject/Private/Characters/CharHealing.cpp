@@ -11,6 +11,8 @@
 #include "PlayerHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 
 // Sets default values
@@ -57,6 +59,7 @@ ACharHealing::ACharHealing()
 	m_DefaultHeal = 25;
 	m_IncreasedHeal = 60;
 	m_Health = m_MaxHealth;
+	bIsHealing = false;
 
 	// Create Widget
 	PlayerHUDClass = nullptr;
@@ -113,9 +116,9 @@ void ACharHealing::MoveRight(float Value)
 void ACharHealing::ActivateHeal()
 {
 	FString HealString = FString::SanitizeFloat(m_Health);
-	if (m_HealingFlasks > 0 && m_Health < 100)
+	if (m_HealingFlasks > 0 && m_Health < 100 && bIsHealing == false)
 	{
-		
+		bIsHealing = true;
 		m_Health += m_DefaultHeal;
 		m_Health = FMath::Clamp(m_Health, 0, m_MaxHealth);
 		
@@ -124,6 +127,14 @@ void ACharHealing::ActivateHeal()
 		m_HealingFlasks -= 1;
 
 		PlayerHUD->ReflexBarPerfect();
+	}
+}
+
+void ACharHealing::ReflexInput()
+{
+	if (UKismetMathLibrary::InRange_FloatFloat(PlayerHUD->CurrentReflexPercent, 0.3, 0.4))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("PERFECT"));
 	}
 }
 
@@ -164,6 +175,7 @@ void ACharHealing::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	//Custom Actions
 	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &ACharHealing::ActivateHeal);
+	PlayerInputComponent->BindAction("Reflex", IE_Pressed, this, &ACharHealing::ReflexInput);
 
 }
 
