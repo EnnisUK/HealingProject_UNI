@@ -64,6 +64,7 @@ ACharHealing::ACharHealing()
 	m_IncreasedHeal = 15;
 	m_Health = m_MaxHealth;
 	bIsHealing = false;
+	ArmourMax = 100.f;
 
 	// Create Widget
 	PlayerHUDClass = nullptr;
@@ -245,6 +246,28 @@ void ACharHealing::ShowMenu()
 	}
 }
 
+
+void ACharHealing::DmgPlayer(float DmgAmount)
+{
+	if (ArmourAmount > 0)
+	{
+		ArmourAmount -= DmgAmount;
+		ArmourAmount = FMath::Clamp(ArmourAmount, 0, ArmourMax);
+
+	}
+	else
+	{
+		m_Health -= DmgAmount;
+		m_Health = FMath::Clamp(m_Health, 0, m_MaxHealth);
+	}
+
+	if (m_Health == 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Dead"));
+	}
+
+}
+
 void ACharHealing::ReflexBuffActivate()
 {
 	switch (ChosenBuff)
@@ -256,6 +279,9 @@ void ACharHealing::ReflexBuffActivate()
 		UpdateHealth();
 		break;
 	case ESelectedBuff::Armour:
+		ArmourAmount += 40;
+		ArmourAmount = FMath::Clamp(ArmourAmount, 0, ArmourMax);
+
 		break;
 	case ESelectedBuff::SpeedIncrease:
 		GetCharacterMovement()->MaxWalkSpeed = 900;

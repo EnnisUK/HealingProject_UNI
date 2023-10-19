@@ -22,6 +22,9 @@ public:
 	class UProgressBar* HealthBar;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UProgressBar* ArmourBar;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* ReflexBar;
 
 

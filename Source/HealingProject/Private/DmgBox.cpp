@@ -56,7 +56,7 @@ void ADmgBox::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 void ADmgBox::DmgPlayer()
 {
-	m_Character->m_Health -= DmgAmount * m_DeltaSeconds;
+	m_Character->DmgPlayer(DmgAmount * m_DeltaSeconds);
 	m_Character->UpdateHealth();
 }
 

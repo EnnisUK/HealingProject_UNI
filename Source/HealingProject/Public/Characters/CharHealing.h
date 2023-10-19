@@ -38,7 +38,11 @@ public:
 
 	float m_IncreasedHeal;
 
+	UPROPERTY(BlueprintReadOnly)
 	float ArmourAmount;
+
+	UPROPERTY(BlueprintReadOnly)
+	float ArmourMax;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_Health;
@@ -117,6 +121,9 @@ public:
 	class UBuffSelectedMenu* SelectBuffMenu;
 
 	void UpdateHealth();
+
+	UFUNCTION(BlueprintCallable)
+	void DmgPlayer(float DmgAmount);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESelectedBuff ChosenBuff = ESelectedBuff::IncreasedHeal;
