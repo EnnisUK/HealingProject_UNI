@@ -17,7 +17,7 @@ ADmgBox::ADmgBox()
 	PrimaryActorTick.bCanEverTick = true;
 
 	HitBox = CreateDefaultSubobject<UBoxComponent>("DmgHitBox");
-	HitBox->InitBoxExtent(FVector(15, 15, 15));
+	HitBox->InitBoxExtent(FVector(150, 150, 150));
 
 
 	
@@ -56,7 +56,7 @@ void ADmgBox::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 void ADmgBox::DmgPlayer()
 {
-	m_Character->m_Health -= 100.0f * m_DeltaSeconds;
+	m_Character->m_Health -= DmgAmount * m_DeltaSeconds;
 	m_Character->UpdateHealth();
 }
 

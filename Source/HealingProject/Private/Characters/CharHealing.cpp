@@ -12,6 +12,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UObject/ConstructorHelpers.h"
 
 
 
@@ -56,8 +57,8 @@ ACharHealing::ACharHealing()
 	// Class Variable Defaults
 
 	m_HealingFlasks = 5;
-	m_DefaultHeal = 25;
-	m_IncreasedHeal = 60;
+	m_DefaultHeal = 30;
+	m_IncreasedHeal = 15;
 	m_Health = m_MaxHealth;
 	bIsHealing = false;
 
@@ -137,16 +138,24 @@ void ACharHealing::ReflexInput()
 	
 		if (UKismetMathLibrary::InRange_FloatFloat(PlayerHUD->CurrentReflexPercent, 0.3, 0.4, true, true))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("PERFECT"));
+			if (ReflexSuccess)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), ReflexSuccess, 0.3);
+			}
 			GetWorld()->GetTimerManager().ClearTimer(PlayerHUD->ReflexFillBar);
 			PlayerHUD->ResetReflexBar();
+			ReflexBuffActivate();
 		}
 		else
 		{
+			if (ReflexFail)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), ReflexFail, 0.3);
+			}
 			bReflexAttempted = true;
 			GetWorld()->GetTimerManager().ClearTimer(PlayerHUD->ReflexFillBar);
 			PlayerHUD->ResetReflexBar();
-			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("MISSED"));
+			
 		}
 	}
 
@@ -197,4 +206,28 @@ void ACharHealing::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Reflex", IE_Pressed, this, &ACharHealing::ReflexInput);
 
 }
+
+void ACharHealing::ReflexBuffActivate()
+{
+	switch (ChosenBuff)
+	{
+	case ESelectedBuff::IncreasedHeal:
+		m_Health += m_IncreasedHeal;
+		m_Health = FMath::Clamp(m_Health, 0, m_MaxHealth);
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("EXTRA HEAL"));
+		UpdateHealth();
+		break;
+	case ESelectedBuff::Armour:
+		break;
+	case ESelectedBuff::SpeedIncrease:
+		GetCharacterMovement()->MaxWalkSpeed = 900;
+
+		break;
+	case ESelectedBuff::JumpHeight:
+		GetCharacterMovement()->JumpZVelocity = 800;
+		break;
+	default:
+		break;
+	} 
+} 
 

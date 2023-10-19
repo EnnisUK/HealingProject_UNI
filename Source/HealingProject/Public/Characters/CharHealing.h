@@ -4,17 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MyEnums.h"
 #include "CharHealing.generated.h"
 
-UENUM(BlueprintType)
-enum class ESelectedBuff : uint8
-{
-	IncreasedHeal,
-	Armour,
-	SpeedIncrease,
-	JumpHeight,
 
-};
 
 
 UCLASS()
@@ -38,6 +31,7 @@ public:
 
 	// Variables
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int m_HealingFlasks;
 
 	float m_DefaultHeal;
@@ -55,6 +49,12 @@ public:
 	bool bReflexAttempted;
 
 	FTimerHandle m_HealDelay;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* ReflexSuccess;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* ReflexFail;
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,6 +74,8 @@ protected:
 	void ReflexInput();
 	
 	void HealIsTrue();
+
+	void ReflexBuffActivate();
 
 
 
@@ -95,5 +97,7 @@ public:
 
 	void UpdateHealth();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ESelectedBuff ChosenBuff = ESelectedBuff::IncreasedHeal;
 	
 };

@@ -1,44 +1,40 @@
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Characters/CharHealing.h"
-#include "PlayerHUD.generated.h"
+#include "BuffSelectMenu.generated.h"
+
 
 UCLASS(Abstract)
-class HEALINGPROJECT_API UPlayerHUD : public UUserWidget
+class HEALINGPROJECT_API UBuffSelectedMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
 
-	void SetHealth(float CurrentHealth, float MaxHealth);
 
-	void ReflexBarPerfect();
+	virtual void NativeConstruct() override;
 
-	void ResetReflexBar();
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	void OnHealClicked();
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UProgressBar* ReflexBar;
-
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UImage* ReflexPerfectImage;
+	class UCanvasPanel* CanvasPanel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UImage* FlasksIcon;
+	class UButton* ArmorButton;
 
-	float CurrentReflexPercent;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* SpeedBoostButton;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* JumpHeightButton;
 
-	FTimerHandle ReflexFillBar;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* IncreasedHealButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ACharHealing* Character;
-
-
 
 };

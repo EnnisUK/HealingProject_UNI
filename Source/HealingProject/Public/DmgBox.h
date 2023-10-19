@@ -36,6 +36,9 @@ protected:
 
 	float m_DeltaSeconds;
 
+	UPROPERTY(EditAnywhere)
+	float DmgAmount = 500;
+
 	ACharHealing* m_Character;
 
 public:	
