@@ -8,6 +8,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "PlayerHUD.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 ACharHealing::ACharHealing()
@@ -53,12 +57,26 @@ ACharHealing::ACharHealing()
 	m_DefaultHeal = 25;
 	m_IncreasedHeal = 60;
 	m_Health = m_MaxHealth;
+
+	// Create Widget
+	PlayerHUDClass = nullptr;
+	PlayerHUD = nullptr;
+	
 }
 
 // Called when the game starts or when spawned
 void ACharHealing::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		
+		PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), PlayerHUDClass);
+		check(PlayerHUD);
+		PlayerHUD->AddToPlayerScreen();
+		PlayerHUD->SetHealth(m_Health, m_MaxHealth);
+	}
 	
 }
 
@@ -96,17 +114,29 @@ void ACharHealing::ActivateHeal()
 	FString HealString = FString::SanitizeFloat(m_Health);
 	if (m_HealingFlasks > 0 && m_Health < 100)
 	{
+		
 		m_Health += m_DefaultHeal;
-		FMath::Clamp(m_Health, 0, m_MaxHealth);
+		m_Health = FMath::Clamp(m_Health, 0, m_MaxHealth);
+		
+		UpdateHealth();
+
+		m_HealingFlasks -= 1;
 
 		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, HealString);
 	}
+}
+
+void ACharHealing::UpdateHealth()
+{
+	PlayerHUD->SetHealth(m_Health, m_MaxHealth);
+
 }
 
 // Called every frame
 void ACharHealing::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 }
 

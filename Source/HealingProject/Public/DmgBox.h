@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "DmgBox.generated.h"
 
+class ACharHealing;
 
 UCLASS()
 class HEALINGPROJECT_API ADmgBox : public AActor
@@ -24,9 +25,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UBoxComponent* HitBox;
 
-
+	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void DmgPlayer();
@@ -35,7 +36,7 @@ protected:
 
 	float m_DeltaSeconds;
 
-
+	ACharHealing* m_Character;
 
 public:	
 	// Called every frame
