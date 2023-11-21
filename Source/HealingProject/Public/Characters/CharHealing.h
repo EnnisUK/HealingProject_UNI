@@ -58,6 +58,8 @@ public:
 
 	FTimerHandle m_HealDelay;
 
+	FTimerHandle m_SpeedBoostTimer;
+
 	UPROPERTY(EditDefaultsOnly)
 	USoundBase* ReflexSuccess;
 

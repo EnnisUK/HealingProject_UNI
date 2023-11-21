@@ -34,6 +34,10 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* IncreasedHealButton;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* ExitButton;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ACharHealing* Character;
 

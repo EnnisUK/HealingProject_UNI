@@ -284,7 +284,11 @@ void ACharHealing::ReflexBuffActivate()
 
 		break;
 	case ESelectedBuff::SpeedIncrease:
-		GetCharacterMovement()->MaxWalkSpeed = 900;
+		
+		GetWorldTimerManager().SetTimer(m_SpeedBoostTimer, this, &ACharHealing::ClearBuffs, 4.0f, false);
+		GetCharacterMovement()->MaxWalkSpeed = 1500;
+
+		
 
 		break;
 	case ESelectedBuff::JumpHeight:
